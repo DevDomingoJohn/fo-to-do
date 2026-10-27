@@ -1,3 +1,4 @@
+import appIcon from '../assets/fo-to-do-icon.svg'
 import { useRef, useState } from 'react'
 import { Link, NavLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
@@ -137,7 +138,7 @@ function Navbar({ groups, tasks, onReorderGroup, sidebarWidth, onSidebarWidthCha
   return (
     <aside className={`sidebar${isResizing ? ' sidebar-resizing' : ''}`}>
       <Link to="/tasks" className="brand" aria-label="fo-to-do tasks">
-        <span className="brand-mark">f</span>
+        <img className="brand-mark" src={appIcon} alt="" aria-hidden="true" />
         <span>fo-to-do</span>
       </Link>
 

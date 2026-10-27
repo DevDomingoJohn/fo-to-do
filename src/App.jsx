@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import Navbar from './components/Navbar'
-import { groups as initialGroups } from './data/groups'
 import Developers from './pages/Developers'
 import GroupTasks from './pages/GroupTasks'
 import Groups from './pages/Groups'
@@ -11,14 +10,7 @@ import './App.css'
 
 const STORAGE_KEY = 'fo-to-do-all-tasks'
 const GROUPS_STORAGE_KEY = 'fo-to-do-groups'
-const buildInitialTasks = (groups) =>
-  groups.flatMap((group) =>
-    (group.tasks || []).map((task) => ({
-      ...task,
-      id: `${group.id}-${task.id}`,
-      groupId: group.id,
-    })),
-  )
+const THEME_STORAGE_KEY = 'fo-to-do-theme'
 
 const ensureUniqueTaskIds = (tasks) => {
   const usedIds = new Set()
@@ -47,27 +39,34 @@ function App() {
   const [sidebarWidth, setSidebarWidth] = useState(264)
   const [undoItem, setUndoItem] = useState(null)
   const undoTimerRef = useRef(null)
+  const [theme, setTheme] = useState(() => {
+    try {
+      return window.localStorage.getItem(THEME_STORAGE_KEY) === 'light' ? 'light' : 'dark'
+    } catch {
+      return 'dark'
+    }
+  })
   const [groups, setGroups] = useState(() => {
     try {
       const savedGroups = window.localStorage.getItem(GROUPS_STORAGE_KEY)
-      if (!savedGroups) return initialGroups
+      if (!savedGroups) return []
 
       const parsedGroups = JSON.parse(savedGroups)
-      return Array.isArray(parsedGroups) ? parsedGroups : initialGroups
+      return Array.isArray(parsedGroups) ? parsedGroups : []
     } catch {
-      return initialGroups
+      return []
     }
   })
 
   const [tasks, setTasks] = useState(() => {
     try {
       const savedTasks = window.localStorage.getItem(STORAGE_KEY)
-      if (!savedTasks) return buildInitialTasks(initialGroups)
+      if (!savedTasks) return []
 
       const parsedTasks = JSON.parse(savedTasks)
-      return Array.isArray(parsedTasks) ? ensureUniqueTaskIds(parsedTasks) : buildInitialTasks(initialGroups)
+      return Array.isArray(parsedTasks) ? ensureUniqueTaskIds(parsedTasks) : []
     } catch {
-      return buildInitialTasks(initialGroups)
+      return []
     }
   })
 
@@ -78,6 +77,11 @@ function App() {
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks))
   }, [tasks])
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    window.localStorage.setItem(THEME_STORAGE_KEY, theme)
+  }, [theme])
 
   useEffect(() => () => window.clearTimeout(undoTimerRef.current), [])
 
@@ -231,7 +235,7 @@ function App() {
   }
 
   return (
-    <div className="app-shell min-h-screen" style={{ '--sidebar-width': `${sidebarWidth}px` }}>
+    <div className="app-shell min-h-screen" data-theme={theme} style={{ '--sidebar-width': `${sidebarWidth}px` }}>
       <Navbar
         groups={groups}
         tasks={tasks}
@@ -239,6 +243,24 @@ function App() {
         sidebarWidth={sidebarWidth}
         onSidebarWidthChange={setSidebarWidth}
       />
+      <button
+        type="button"
+        className="theme-toggle"
+        aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+        title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+        onClick={() => setTheme((currentTheme) => currentTheme === 'dark' ? 'light' : 'dark')}
+      >
+        {theme === 'dark' ? (
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.2 15.4A8.5 8.5 0 0 1 8.6 3.8 8.5 8.5 0 1 0 20.2 15.4Z" />
+          </svg>
+        )}
+      </button>
       <main className="app-main ml-[var(--layout-sidebar-width)] min-h-screen text-ink max-[560px]:ml-0 max-[560px]:min-h-[calc(100vh-126px)]">
         <div className="page-content mx-auto w-full max-w-[970px] px-14 pt-16 pb-20 max-[760px]:px-7 max-[760px]:pt-[46px] max-[760px]:pb-16 max-[560px]:px-[18px] max-[560px]:pt-9 max-[560px]:pb-[52px]">
         <Routes>

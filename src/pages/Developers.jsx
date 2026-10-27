@@ -1,23 +1,23 @@
 const developers = [
   {
-    name: 'Developer One',
-    role: 'Add developer role',
-    description: "Add this developer's role and a short introduction.",
+    name: 'John Lery Domingo',
+    role: '',
+    description: "The lead developer and full-stack developer for fo-to-do. He is experienced in android development and has a background in scripting and web development.",
   },
   {
-    name: 'Developer Two',
-    role: 'Add developer role',
-    description: "Add this developer's role and a short introduction.",
+    name: 'Mary Clarence Reotan',
+    role: '',
+    description: "I'm passionate about learning new technologies, improving my skills, and exploring the world of web development and IT.",
   },
   {
-    name: 'Developer Three',
-    role: 'Add developer role',
-    description: "Add this developer's role and a short introduction.",
+    name: 'Mica Graciella Dequina',
+    role: '',
+    description: "BSIT student aspiring to become a IT professional, with interests in database management, and computer networking. Eager to explore new technologies, expand technical knowledge, and develop practical IT skills.",
   },
   {
-    name: 'Developer Four',
-    role: 'Add developer role',
-    description: "Add this developer's role and a short introduction.",
+    name: 'Kristine Rose Amistoso',
+    role: '',
+    description: "I enjoy turning ideas into reality through coding and creating simple, meaningful web experiences. Every project is an opportunity to learn something new and grow as an aspiring IT professional.",
   },
 ]
 
