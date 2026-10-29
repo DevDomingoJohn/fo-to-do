@@ -40,7 +40,15 @@ function Icon({ name, className = '' }) {
   return <svg {...shared}><circle cx="12" cy="8" r="3.5" /><path d="M5 20a7 7 0 0 1 14 0" /></svg>
 }
 
-function Navbar({ groups, tasks, onReorderGroup, sidebarWidth, onSidebarWidthChange }) {
+function Navbar({
+  groups,
+  tasks,
+  onReorderGroup,
+  sidebarWidth,
+  onSidebarWidthChange,
+  mobileMenuOpen,
+  onMobileMenuClose,
+}) {
   const [groupsExpanded, setGroupsExpanded] = useState(false)
   const [isResizing, setIsResizing] = useState(false)
   const [draggedGroupId, setDraggedGroupId] = useState(null)
@@ -136,8 +144,20 @@ function Navbar({ groups, tasks, onReorderGroup, sidebarWidth, onSidebarWidthCha
   }
 
   return (
-    <aside className={`sidebar${isResizing ? ' sidebar-resizing' : ''}`}>
-      <Link to="/tasks" className="brand" aria-label="fo-to-do tasks">
+    <>
+      {mobileMenuOpen && (
+        <button
+          type="button"
+          className="sidebar-backdrop"
+          aria-label="Close navigation menu"
+          onClick={onMobileMenuClose}
+        />
+      )}
+      <aside
+        id="app-sidebar"
+        className={`sidebar${isResizing ? ' sidebar-resizing' : ''}${mobileMenuOpen ? ' sidebar-mobile-open' : ''}`}
+      >
+      <Link to="/tasks" className="brand" aria-label="fo-to-do tasks" onClick={onMobileMenuClose}>
         <img className="brand-mark" src={appIcon} alt="" aria-hidden="true" />
         <span>fo-to-do</span>
       </Link>
@@ -166,13 +186,13 @@ function Navbar({ groups, tasks, onReorderGroup, sidebarWidth, onSidebarWidthCha
       </label>
 
       <nav className="sidebar-nav" aria-label="Main navigation">
-        <NavLink to="/tasks" className={() => `sidebar-link${isTaskPage ? ' sidebar-link-active' : ''}`}>
+        <NavLink to="/tasks" className={() => `sidebar-link${isTaskPage ? ' sidebar-link-active' : ''}`} onClick={onMobileMenuClose}>
           <Icon name="inbox" />
           <span>Task</span>
           {pendingCount > 0 && <span className="sidebar-count">{pendingCount}</span>}
         </NavLink>
         <div className="sidebar-group-heading">
-          <NavLink to="/groups" className={navClassName}>
+          <NavLink to="/groups" className={navClassName} onClick={onMobileMenuClose}>
             <Icon name="group" />
             <span>Task Groups</span>
           </NavLink>
@@ -209,6 +229,7 @@ function Navbar({ groups, tasks, onReorderGroup, sidebarWidth, onSidebarWidthCha
                 className={({ isActive }) =>
                   `sidebar-link${isActive ? ' sidebar-link-active' : ''}${draggedGroupId === group.id ? ' is-dragging' : ''}${dropGroupId === group.id ? ' is-drop-target' : ''}`
                 }
+                onClick={onMobileMenuClose}
                 onDragStart={(event) => handleGroupDragStart(event, group.id)}
                 onDragOver={(event) => handleGroupDragOver(event, group.id)}
                 onDrop={(event) => handleGroupDrop(event, group.id)}
@@ -227,11 +248,11 @@ function Navbar({ groups, tasks, onReorderGroup, sidebarWidth, onSidebarWidthCha
       </nav>
 
       <div className="sidebar-bottom">
-        <NavLink to="/developers" className={navClassName}>
+        <NavLink to="/developers" className={navClassName} onClick={onMobileMenuClose}>
           <Icon name="person" />
           <span>Developers</span>
         </NavLink>
-        <NavLink to="/guide" className={navClassName}>
+        <NavLink to="/guide" className={navClassName} onClick={onMobileMenuClose}>
           <Icon name="guide" />
           <span>Guide</span>
         </NavLink>
@@ -252,7 +273,8 @@ function Navbar({ groups, tasks, onReorderGroup, sidebarWidth, onSidebarWidthCha
         onPointerCancel={handleResizeEnd}
         onKeyDown={handleResizeKeyDown}
       />
-    </aside>
+      </aside>
+    </>
   )
 }
 

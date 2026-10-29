@@ -37,6 +37,7 @@ const ensureUniqueTaskIds = (tasks) => {
 
 function App() {
   const [sidebarWidth, setSidebarWidth] = useState(264)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [undoItem, setUndoItem] = useState(null)
   const undoTimerRef = useRef(null)
   const [theme, setTheme] = useState(() => {
@@ -84,6 +85,28 @@ function App() {
   }, [theme])
 
   useEffect(() => () => window.clearTimeout(undoTimerRef.current), [])
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return undefined
+
+    const previousOverflow = document.body.style.overflow
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setMobileMenuOpen(false)
+    }
+    const closeOnDesktopResize = () => {
+      if (window.innerWidth > 560) setMobileMenuOpen(false)
+    }
+
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', closeOnEscape)
+    window.addEventListener('resize', closeOnDesktopResize)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', closeOnEscape)
+      window.removeEventListener('resize', closeOnDesktopResize)
+    }
+  }, [mobileMenuOpen])
 
   const addTask = (taskText, groupId = '') => {
     const trimmedTask = taskText.trim()
@@ -236,12 +259,29 @@ function App() {
 
   return (
     <div className="app-shell min-h-screen" data-theme={theme} style={{ '--sidebar-width': `${sidebarWidth}px` }}>
+      <div className="mobile-toolbar">
+        <button
+          type="button"
+          className="mobile-menu-toggle"
+          aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={mobileMenuOpen}
+          aria-controls="app-sidebar"
+          onClick={() => setMobileMenuOpen((isOpen) => !isOpen)}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <span className="mobile-toolbar-title">fo-to-do</span>
+      </div>
       <Navbar
         groups={groups}
         tasks={tasks}
         onReorderGroup={reorderGroups}
         sidebarWidth={sidebarWidth}
         onSidebarWidthChange={setSidebarWidth}
+        mobileMenuOpen={mobileMenuOpen}
+        onMobileMenuClose={() => setMobileMenuOpen(false)}
       />
       <button
         type="button"
@@ -261,7 +301,7 @@ function App() {
           </svg>
         )}
       </button>
-      <main className="app-main ml-[var(--layout-sidebar-width)] min-h-screen text-ink max-[560px]:ml-0 max-[560px]:min-h-[calc(100vh-126px)]">
+      <main className="app-main ml-[var(--layout-sidebar-width)] min-h-screen text-ink max-[560px]:ml-0 max-[560px]:min-h-[calc(100vh-56px)]">
         <div className="page-content mx-auto w-full max-w-[970px] px-14 pt-16 pb-20 max-[760px]:px-7 max-[760px]:pt-[46px] max-[760px]:pb-16 max-[560px]:px-[18px] max-[560px]:pt-9 max-[560px]:pb-[52px]">
         <Routes>
           <Route path="/" element={<Tasks tasks={tasks} groups={groups} onAddTask={addTask} onToggleTask={toggleTask} onDeleteTask={deleteTask} onUpdateTask={updateTask} onReorderTask={reorderTasks} />} />
