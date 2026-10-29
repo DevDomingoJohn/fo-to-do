@@ -220,6 +220,17 @@ function TaskItem({ task, groupName, onToggleTask, onDeleteTask, onUpdateTask, o
                 <path d="m14 5 5 5M4 20l4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10L4 20Z" />
               </svg>
             </button>
+            <button
+              type="button"
+              className="task-delete-trigger"
+              aria-label={`Delete task: ${task.text}`}
+              title="Delete task"
+              onClick={() => onDeleteTask(task.id)}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 7h16M10 11v6m4-6v6M5 7l1 13h12l1-13M9 7V4h6v3" />
+              </svg>
+            </button>
           </>
         )}
       </div>

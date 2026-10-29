@@ -621,11 +621,14 @@
 }
 
 .task-row:hover .task-edit-trigger,
-.task-row:focus-within .task-edit-trigger {
+.task-row:focus-within .task-edit-trigger,
+.task-row:hover .task-delete-trigger,
+.task-row:focus-within .task-delete-trigger {
   opacity: 1;
 }
 
 .task-edit-trigger,
+.task-delete-trigger,
 .task-edit-button {
   display: grid;
   width: 30px;
@@ -642,13 +645,16 @@
 }
 
 .task-edit-trigger:hover,
-.task-edit-trigger:focus-visible {
+.task-edit-trigger:focus-visible,
+.task-delete-trigger:hover,
+.task-delete-trigger:focus-visible {
   background: #303431;
   color: #f0f1ed;
   opacity: 1;
 }
 
 .task-edit-trigger svg,
+.task-delete-trigger svg,
 .task-edit-button svg {
   width: 16px;
   height: 16px;
@@ -1389,6 +1395,7 @@
   }
 
   :root[data-theme="light"] .task-edit-trigger,
+  :root[data-theme="light"] .task-delete-trigger,
   :root[data-theme="light"] .group-edit-trigger,
   :root[data-theme="light"] .group-delete-trigger,
   :root[data-theme="light"] .group-dialog-close,
@@ -1397,6 +1404,7 @@
   }
 
   :root[data-theme="light"] .task-edit-trigger:hover,
+  :root[data-theme="light"] .task-delete-trigger:hover,
   :root[data-theme="light"] .task-edit-cancel:hover,
   :root[data-theme="light"] .group-edit-trigger:hover,
   :root[data-theme="light"] .group-dialog-close:hover {
@@ -1583,6 +1591,12 @@
   }
 
   .task-edit-trigger {
+    width: 28px;
+    height: 28px;
+    opacity: 1;
+  }
+
+  .task-delete-trigger {
     width: 28px;
     height: 28px;
     opacity: 1;
