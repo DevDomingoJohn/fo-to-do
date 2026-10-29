@@ -1270,6 +1270,10 @@
     margin-left: auto;
   }
 
+  .desktop-theme-toggle {
+    display: none;
+  }
+
   .app-shell {
     --layout-sidebar-width: 0px;
   }
